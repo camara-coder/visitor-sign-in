@@ -1,63 +1,97 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
-import { registerVisitor } from '../utils/api';
+import { FaFacebook, FaYoutube, FaInstagram } from 'react-icons/fa';
 
-interface SignInFormData {
-  firstName: string;
-  lastName: string;
-  address: string;
-  phoneNumber: string;
+interface ConfirmationMessageProps {
+  status: string | null;
+  message: string | null;
 }
 
-export function SignInForm() {
-  const router = useRouter();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting }
-  } = useForm<SignInFormData>();
-
-  const onSubmit = async (data: SignInFormData) => {
-    try {
-      const response = await registerVisitor(data);
-      if (response.success) {
-        router.push('/confirm?status=success');
-      } else {
-        router.push(`/confirm?status=error&message=${response.error}`);
-      }
-    } catch (error) {
-      router.push('/confirm?status=error&message=An unexpected error occurred');
-    }
+export function ConfirmationMessage({ status, message }: ConfirmationMessageProps) {
+  const socialLinks = {
+    facebook: process.env.NEXT_PUBLIC_FACEBOOK_URL || '#',
+    youtube: process.env.NEXT_PUBLIC_YOUTUBE_URL || '#',
+    instagram: process.env.NEXT_PUBLIC_INSTAGRAM_URL || '#'
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div>
-        <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
-          First Name *
-        </label>
-        <input
-          type="text"
-          id="firstName"
-          {...register('firstName', { required: 'First name is required' })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-        />
-        {errors.firstName && (
-          <p className="mt-2 text-sm text-red-600">{errors.firstName.message}</p>
-        )}
-      </div>
+    <div className="text-center">
+      {status === 'success' ? (
+        <div className="animate-fadeIn">
+          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+            <svg
+              className="h-6 w-6 text-green-600"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h3 className="mt-3 text-lg font-medium text-gray-900">
+            Welcome!
+          </h3>
+          <p className="mt-2 text-sm text-gray-500">
+            Thank you for signing in. You're all set!
+          </p>
+        </div>
+      ) : (
+        <div className="animate-fadeIn">
+          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+            <svg
+              className="h-6 w-6 text-red-600"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </div>
+          <h3 className="mt-3 text-lg font-medium text-gray-900">
+            Registration Error
+          </h3>
+          <p className="mt-2 text-sm text-gray-500">
+            {message || 'An error occurred during registration. Please try again.'}
+          </p>
+        </div>
+      )}
 
-      {/* Similar fields for lastName, address, phoneNumber */}
-      
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      >
-        Continue
-      </button>
-    </form>
+      {/* Social Media Links */}
+      <div className="mt-8 flex justify-center space-x-6">
+        <a
+          href={socialLinks.facebook}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-gray-400 hover:text-gray-500"
+        >
+          <span className="sr-only">Facebook</span>
+          <FaFacebook className="h-6 w-6" />
+        </a>
+        <a
+          href={socialLinks.youtube}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-gray-400 hover:text-gray-500"
+        >
+          <span className="sr-only">YouTube</span>
+          <FaYoutube className="h-6 w-6" />
+        </a>
+        <a
+          href={socialLinks.instagram}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-gray-400 hover:text-gray-500"
+        >
+          <span className="sr-only">Instagram</span>
+          <FaInstagram className="h-6 w-6" />
+        </a>
+      </div>
+    </div>
   );
 }
