@@ -1,0 +1,20 @@
+{
+    "name": "enable-event",
+    "version": "1.0.0",
+    "description": "Lambda function to enable an event",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "build": "mkdir -p dist && zip -r dist/enable-event.zip index.js"
+    },
+    "keywords": [
+      "lambda",
+      "event",
+      "enable"
+    ],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "uuid": "^9.0.1"
+    }
+  }

@@ -1,0 +1,99 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Visitor Sign-In Application
+
+Globals:
+  Function:
+    Timeout: 30
+    Runtime: nodejs16.x
+    Layers:
+      - !Ref CommonLayer
+    Environment:
+      Variables:
+        DB_HOST: host.docker.internal
+        DB_PORT: 5432
+        DB_NAME: visitordb
+        DB_USER: postgres
+        DB_PASSWORD: changeme
+        DB_SSL: 'false'
+
+Resources:
+  # Lambda Layer for shared code
+  CommonLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: visitor-signin-common-layer
+      Description: Common code for visitor sign-in functions
+      ContentUri: layers/dist/common-layer.zip
+      CompatibleRuntimes:
+        - nodejs16.x
+      RetentionPolicy: Retain
+
+  # Register Visitor Function
+  RegisterVisitorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/registerVisitor/
+      Handler: index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /register-visitor
+            Method: post
+
+  # Get Event Function
+  GetEventFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/getEvent/
+      Handler: index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /event
+            Method: get
+
+  # Enable Event Function
+  EnableEventFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/enableEvent/
+      Handler: index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /enable-event
+            Method: post
+
+  # Disable Event Function
+  DisableEventFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/disableEvent/
+      Handler: index.handler
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /disable-event
+            Method: post
+
+Outputs:
+  VisitorSignInApi:
+    Description: API Gateway endpoint URL for the visitor sign-in API
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  RegisterVisitorFunction:
+    Description: Register Visitor Lambda Function ARN
+    Value: !GetAtt RegisterVisitorFunction.Arn
+  GetEventFunction:
+    Description: Get Event Lambda Function ARN
+    Value: !GetAtt GetEventFunction.Arn
+  EnableEventFunction:
+    Description: Enable Event Lambda Function ARN
+    Value: !GetAtt EnableEventFunction.Arn
+  DisableEventFunction:
+    Description: Disable Event Lambda Function ARN
+    Value: !GetAtt DisableEventFunction.Arn

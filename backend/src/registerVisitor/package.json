@@ -1,0 +1,20 @@
+{
+    "name": "register-visitor",
+    "version": "1.0.0",
+    "description": "Lambda function to register a visitor for an event",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "build": "mkdir -p dist && zip -r dist/register-visitor.zip index.js"
+    },
+    "keywords": [
+      "lambda",
+      "visitor",
+      "register"
+    ],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "uuid": "^9.0.1"
+    }
+  }

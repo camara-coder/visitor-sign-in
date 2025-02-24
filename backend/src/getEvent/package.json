@@ -1,0 +1,17 @@
+{
+    "name": "get-event",
+    "version": "1.0.0",
+    "description": "Lambda function to get the current event",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "build": "mkdir -p dist && zip -r dist/get-event.zip index.js"
+    },
+    "keywords": [
+      "lambda",
+      "event",
+      "get"
+    ],
+    "author": "",
+    "license": "ISC"
+  }

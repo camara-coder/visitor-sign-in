@@ -1,0 +1,9 @@
+{
+    "name": "visitor-sign-in-common",
+    "version": "1.0.0",
+    "description": "Common code for visitor sign-in application",
+    "dependencies": {
+      "pg": "^8.11.3",
+      "uuid": "^9.0.1"
+    }
+  }
